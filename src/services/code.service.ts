@@ -67,6 +67,7 @@ export class CodeService {
       batchName: batch.name,
       productName: product.name,
       companyName: company.name,
+      imgUrl: batch.img_url,
     };
   }
 }

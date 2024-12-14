@@ -16,4 +16,7 @@ export class Batches {
 
   @Column()
   product_id!: number;
+
+  @Column({ type: "json" })
+  img_url!: JSON;
 }
