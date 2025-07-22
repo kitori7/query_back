@@ -32,4 +32,15 @@ export class BatchController {
       };
     }
   }
+
+  @Post("/apply")
+  async applyBatch(@Body() body: { batchId: number; codeCount: number }) {
+    const { batchId, codeCount } = body;
+    const data = await this.batchService.applyBatch(batchId, codeCount);
+    return {
+      code: 200,
+      data: true,
+      msg: "添加成功",
+    };
+  }
 }
