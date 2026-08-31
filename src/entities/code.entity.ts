@@ -8,18 +8,18 @@ export class Code {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column()
-  batches_id!: number;
+  @Column({ type: "int", nullable: true })
+  batches_id!: number | null;
 
-  @Column()
-  used_time!: string;
+  @Column({ type: "varchar", length: 255, nullable: true })
+  used_time!: string | null;
 
-  @Column({ default: 0 })
-  used_sum!: number;
+  @Column({ type: "int", unsigned: true, nullable: true })
+  used_sum!: number | null;
 
-  @Column()
-  code_uuid!: string;
+  @Column({ type: "varchar", length: 255, nullable: true })
+  code_uuid!: string | null;
 
-  @Column()
-  url!: string;
+  @Column({ type: "varchar", length: 255, nullable: true })
+  url!: string | null;
 }

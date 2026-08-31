@@ -8,6 +8,6 @@ export class Company {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column()
-  name!: string;
+  @Column({ type: "varchar", length: 255, nullable: true })
+  name!: string | null;
 }

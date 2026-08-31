@@ -1,37 +1,39 @@
-import { createExpressServer } from "routing-controllers";
-import { json, urlencoded } from "body-parser";
 import "reflect-metadata";
-import ds from "./data-source";
-import { codeController } from "./src/controllers/code.controller";
+import express, { type Express } from "express";
+import cookieParser from "cookie-parser";
+import cors from "cors";
+import { useExpressServer } from "routing-controllers";
+import { env } from "./src/config/env";
+import { authorizationChecker } from "./src/auth/authorization-checker";
+import { ApiErrorMiddleware } from "./src/middlewares/api-error.middleware";
+import { requestIdMiddleware } from "./src/middlewares/request-id.middleware";
+import { requestSchemaGuard } from "./src/middlewares/request-schema-guard.middleware";
 import { BatchController } from "./src/controllers/batches.controll";
-// cors跨域
-const cors = require("cors");
-// 可以配置corsOptions 选项，更安全
-// 全局挂载
+import { codeController } from "./src/controllers/code.controller";
+import { adminControllers } from "./src/controllers/admin";
 
-// 新增：初始化 DataSource
-ds.initialize()
-  .then(() => {
-    console.log("Data Source has been initialized!");
-  })
-  .catch((e: any) => {
-    console.log("Error during Data Source initialization:", e);
+export function createApp(): Express {
+  const app = express();
+  app.disable("x-powered-by");
+  app.use(requestIdMiddleware);
+  app.use(cors({ origin: env.adminAllowedOrigin, credentials: true }));
+  app.use(cookieParser());
+  app.use(express.json({ limit: "1mb" }));
+  app.use(express.urlencoded({ extended: true }));
+  app.use(requestSchemaGuard);
+
+  useExpressServer(app, {
+    controllers: [codeController, BatchController, ...adminControllers],
+    middlewares: [ApiErrorMiddleware],
+    authorizationChecker,
+    defaultErrorHandler: false,
+    classTransformer: true,
+    validation: {
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      forbidUnknownValues: true,
+      validationError: { target: false, value: false },
+    },
   });
-
-const app = createExpressServer({
-  controllers: [codeController, BatchController],
-});
-
-// body 解析相关中间件
-// 解析 json 格式
-app.use(json());
-// 解析 urlencoded body
-// 会在 request 对象上挂载 body 属性，包含解析后的数据。
-// 这个新的 body 对象包含 key-value 键值对，若设置 extended 为 true，则键值可以是任意累心个，否则只能是字符串或数组。
-app.use(urlencoded({ extended: true }));
-app.use(cors());
-
-app.listen(3000, () => {
-  console.log(`  App is running at http://localhost:3000\n`);
-  console.log("  Press CTRL-C to stop\n");
-});
+  return app;
+}
