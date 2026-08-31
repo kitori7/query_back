@@ -1,8 +1,9 @@
 /**
  * 校验码 controller
  */
-import { Controller, Get, Param } from "routing-controllers";
+import { Authorized, Controller, Get, Param } from "routing-controllers";
 import { CodeService } from "../services/code.service";
+import { ApiErrors } from "../errors/api-error";
 
 @Controller("/api/code")
 export class codeController {
@@ -12,8 +13,9 @@ export class codeController {
   }
   //查询全部校验码
   @Get("/queryList")
+  @Authorized("ADMIN")
   queryList() {
-    return this.codeService.queryList();
+    throw ApiErrors.deprecated("该接口已停用，请使用 /api/admin/codes");
   }
 
   // 根据校验码获取详情

@@ -8,15 +8,15 @@ export class Product {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column()
-  name!: string;
+  @Column({ type: "varchar", length: 255, nullable: true })
+  name!: string | null;
 
-  @Column()
-  company_id!: number;
+  @Column({ type: "int", nullable: true })
+  company_id!: number | null;
 
-  @Column()
-  contract_img!: string;
+  @Column({ type: "varchar", length: 255, nullable: true })
+  contract_img!: string | null;
 
-  @Column()
-  serial_number!: number;
+  @Column({ type: "int", nullable: true })
+  serial_number!: number | null;
 }

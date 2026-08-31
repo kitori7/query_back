@@ -27,7 +27,7 @@ export class CodeService {
 
     // 查找批次记录
     const batch = await this.BatchRepository.findOneBy({
-      id: code.batches_id,
+      id: code.batches_id!,
     });
     if (!batch) {
       throw new Error(`Batch with ID ${code.batches_id} not found`);
@@ -35,7 +35,7 @@ export class CodeService {
 
     // 查找产品记录
     const product = await this.ProductRepository.findOneBy({
-      id: batch.product_id,
+      id: batch.product_id!,
     });
     if (!product) {
       throw new Error(`Product with ID ${batch.product_id} not found`);
@@ -43,26 +43,27 @@ export class CodeService {
 
     // 查找公司记录
     const company = await this.CompanyRepository.findOneBy({
-      id: product.company_id,
+      id: product.company_id!,
     });
     if (!company) {
       throw new Error(`Company with ID ${product.company_id} not found`);
     }
 
     // 判断是否是第一次使用
-    const isFirst = code.used_sum === 0;
+    const usedSum = code.used_sum ?? 0;
+    const isFirst = usedSum === 0;
 
     // 更新使用时间和使用次数
-    if (code.used_sum === 1) {
+    if (usedSum === 1) {
       code.used_time = dayjs(new Date()).format("YYYY-MM-DD HH:mm:ss");
     }
-    code.used_sum++;
+    code.used_sum = usedSum + 1;
     await this.CodeRepository.save(code);
 
     // 返回结果
     return {
       isFirst,
-      usedSum: code.used_sum - 1,
+      usedSum,
       usedTime: code.used_time,
       batchName: batch.name,
       productName: product.name,

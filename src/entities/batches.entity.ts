@@ -8,15 +8,18 @@ export class Batches {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column()
-  name!: string;
+  @Column({ type: "varchar", length: 255, nullable: true })
+  name!: string | null;
 
-  @Column()
-  create_time!: string;
+  @Column({ type: "datetime", nullable: true })
+  create_time!: Date | null;
 
-  @Column()
-  product_id!: number;
+  @Column({ type: "int", nullable: true })
+  product_id!: number | null;
 
-  @Column({ type: "json" })
-  img_url!: JSON;
+  @Column({ type: "json", nullable: true })
+  img_url!: string[] | null;
+
+  @Column({ type: "tinyint", nullable: true, default: null, select: false })
+  uniqueness_enforced!: number | null;
 }
