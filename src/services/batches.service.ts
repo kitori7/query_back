@@ -12,7 +12,12 @@ import { lockRowsById } from './admin/admin-service-utils';
 
 const CHUNK_SIZE = 1000;
 const MAX_COUNT = 100000;
+const SERIAL_WIDTH = 7;
 const VERIFY_URL_PREFIX = 'http://www.jyygds.com/?uuid=';
+
+export function formatExportSerial(serial: number): string {
+  return String(serial).padStart(SERIAL_WIDTH, '0');
+}
 
 export class BatchService {
   private translator = shortUUID();
@@ -93,7 +98,11 @@ export class BatchService {
       const rows = await dataSource.getRepository(Code).createQueryBuilder('code').select(['code.id', 'code.code_uuid', 'code.url'])
         .where('code.batches_id = :batchId AND code.id > :lastId', { batchId, lastId }).orderBy('code.id', 'ASC').take(CHUNK_SIZE).getMany();
       if (!rows.length) break;
-      for (const row of rows) { sheet.addRow({ codeUuid: row.code_uuid, url: row.url, serial }).commit(); serial += 1; lastId = row.id; }
+      for (const row of rows) {
+        sheet.addRow({ codeUuid: row.code_uuid, url: row.url, serial: formatExportSerial(serial) }).commit();
+        serial += 1;
+        lastId = row.id;
+      }
     }
     sheet.commit(); await workbook.commit();
   }
