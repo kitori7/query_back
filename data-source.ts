@@ -5,7 +5,7 @@ import { Company } from "./src/entities/company.entity";
 import { Product } from "./src/entities/product.entity";
 import { Batches } from "./src/entities/batches.entity";
 import { Code } from "./src/entities/code.entity";
-import { AdminFoundationIndexes202608310001 } from "./migrations/202608310001-AdminFoundationIndexes";
+import { AdminFoundationIndexes2026083100010 } from "./migrations/2026083100010-AdminFoundationIndexes";
 
 const dataSource = new DataSource({
   type: "mysql",
@@ -15,8 +15,9 @@ const dataSource = new DataSource({
   password: env.dbPassword,
   database: env.dbDatabase,
   entities: [Company, Product, Batches, Code],
-  migrations: [AdminFoundationIndexes202608310001],
+  migrations: [AdminFoundationIndexes2026083100010],
   synchronize: false,
+  migrationsTransactionMode: "none",
   logging: env.dbLogging,
 });
 

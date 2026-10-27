@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { AdminFoundationIndexes202608310001 } from "../migrations/202608310001-AdminFoundationIndexes";
+import { AdminFoundationIndexes2026083100010 } from "../migrations/2026083100010-AdminFoundationIndexes";
 
 function queryRunner(historicalDuplicateCount = 2) {
   const statements: string[] = [];
@@ -18,7 +18,7 @@ function queryRunner(historicalDuplicateCount = 2) {
 
 describe("AdminFoundationIndexes migration contract", () => {
   it("allows historical duplicate batches without updating historical rows", async () => {
-    const migration = new AdminFoundationIndexes202608310001();
+    const migration = new AdminFoundationIndexes2026083100010();
     const { runner, statements } = queryRunner(2);
     await migration.up(runner);
     expect(statements.some((sql) => /UPDATE\s+batches/i.test(sql))).toBe(false);
@@ -29,7 +29,7 @@ describe("AdminFoundationIndexes migration contract", () => {
   });
 
   it("defines a reversible down sequence and can generate up again", async () => {
-    const migration = new AdminFoundationIndexes202608310001();
+    const migration = new AdminFoundationIndexes2026083100010();
     const first = queryRunner(); await migration.up(first.runner); await migration.down(first.runner);
     const second = queryRunner(); await migration.up(second.runner);
     expect(first.statements.filter((sql) => sql.startsWith("ALTER TABLE") && sql.includes("DROP")).length).toBe(6);
@@ -37,7 +37,7 @@ describe("AdminFoundationIndexes migration contract", () => {
   });
 
   it("stops before DDL when a blocking precheck fails", async () => {
-    const migration = new AdminFoundationIndexes202608310001();
+    const migration = new AdminFoundationIndexes2026083100010();
     const statements: string[] = [];
     const runner = { query: vi.fn(async (sql: string) => { statements.push(sql); return [{ count: 1 }]; }) } as any;
     await expect(migration.up(runner)).rejects.toThrow("company name");

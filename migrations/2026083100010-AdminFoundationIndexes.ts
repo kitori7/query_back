@@ -2,8 +2,8 @@ import type { MigrationInterface, QueryRunner } from "typeorm";
 
 type CountRow = { count: string | number };
 
-export class AdminFoundationIndexes202608310001 implements MigrationInterface {
-  name = "AdminFoundationIndexes202608310001";
+export class AdminFoundationIndexes2026083100010 implements MigrationInterface {
+  name = "AdminFoundationIndexes2026083100010";
   transaction = false;
 
   private async assertZero(queryRunner: QueryRunner, sql: string, label: string): Promise<void> {
